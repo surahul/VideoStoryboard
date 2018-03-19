@@ -7,17 +7,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 
-import com.glennio.storyboard.image_applier.StoryboardImageApplier;
 import com.glennio.storyboard.VideoStoryboard;
+import com.glennio.storyboard.image_applier.StoryboardImageApplier;
 import com.glennio.videostoryboardsample.R;
 
 /**
  * Created by rahulverma on 19/03/18.
  */
 
-public class ActivityExampleSimple extends AppCompatActivity{
+public class ActivityExampleSimple extends AppCompatActivity {
 
     private Drawable staticDrawable;
+    private SeekBar seekBar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -26,9 +27,9 @@ public class ActivityExampleSimple extends AppCompatActivity{
 
         staticDrawable = getResources().getDrawable(R.drawable.sample_image);
 
-        SeekBar seekBar = findViewById(R.id.seek_bar);
+        seekBar = findViewById(R.id.seek_bar);
         final VideoStoryboard videoStoryboard = new VideoStoryboard();
-        videoStoryboard.bindViews(findViewById(R.id.view_to_translate),seekBar,(ImageView)findViewById(R.id.view_to_translate));
+        videoStoryboard.bindViews(findViewById(R.id.view_to_translate), seekBarInterface, (ImageView) findViewById(R.id.view_to_translate));
         videoStoryboard.setImageApplier(new StoryboardImageApplier() {
             @Override
             public void applyImageForProgress(ImageView imageView, int progress) {
@@ -52,6 +53,28 @@ public class ActivityExampleSimple extends AppCompatActivity{
             }
         });
     }
+
+    private VideoStoryboard.SeekBarInterface seekBarInterface = new VideoStoryboard.SeekBarInterface() {
+        @Override
+        public int getProgress() {
+            return seekBar.getProgress();
+        }
+
+        @Override
+        public int getMax() {
+            return seekBar.getMax();
+        }
+
+        @Override
+        public float getX() {
+            return seekBar.getX();
+        }
+
+        @Override
+        public float getMeasuredWidth() {
+            return seekBar.getMeasuredWidth();
+        }
+    };
 
 
 }

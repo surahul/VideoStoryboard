@@ -3,8 +3,9 @@ package com.glennio.storyboard;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewParent;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
-import android.widget.SeekBar;
 
 import com.glennio.storyboard.image_applier.StoryboardImageApplier;
 
@@ -16,8 +17,19 @@ import java.lang.ref.WeakReference;
 
 public class VideoStoryboard {
 
+    public interface SeekBarInterface {
+
+        int getProgress();
+
+        int getMax();
+
+        float getX();
+
+        float getMeasuredWidth();
+    }
+
     private WeakReference<View> viewToTranslateWeakReference;
-    private WeakReference<SeekBar> seekBarWeakReference;
+    private WeakReference<SeekBarInterface> seekBarWeakReference;
     private WeakReference<ImageView> imageViewWeakReference;
     float padLeft, padRight;
     private boolean active;
@@ -37,7 +49,7 @@ public class VideoStoryboard {
         this.imageApplier = imageApplier;
     }
 
-    public void bindViews(@Nullable View viewToTranslate, @Nullable SeekBar seekBar, @Nullable ImageView imageView) {
+    public void bindViews(@Nullable View viewToTranslate, @Nullable SeekBarInterface seekbarInterface, @Nullable ImageView imageView) {
         if (viewToTranslate != null)
             this.viewToTranslateWeakReference = new WeakReference<>(viewToTranslate);
         else {
@@ -45,8 +57,8 @@ public class VideoStoryboard {
                 this.viewToTranslateWeakReference.clear();
             this.viewToTranslateWeakReference = null;
         }
-        if (seekBar != null)
-            this.seekBarWeakReference = new WeakReference<>(seekBar);
+        if (seekbarInterface != null)
+            this.seekBarWeakReference = new WeakReference<>(seekbarInterface);
         else {
             if (this.seekBarWeakReference != null)
                 this.seekBarWeakReference.clear();
@@ -86,30 +98,30 @@ public class VideoStoryboard {
             viewToTranslate.setTranslationY(Utils.dpToPx(16));
             viewToTranslate.setAlpha(0f);
             viewToTranslate.setVisibility(View.VISIBLE);
-            viewToTranslate.animate().alpha(1).translationY(0).setDuration(150).setListener(null).start();
+            viewToTranslate.animate().alpha(1).translationY(0).setDuration(150).setInterpolator(new DecelerateInterpolator(1.5f)).setListener(null).start();
         }
     }
 
     private void animateImageViewDisappearance() {
         View viewToTranslate = viewToTranslateWeakReference == null ? null : viewToTranslateWeakReference.get();
         if (viewToTranslate != null) {
-            viewToTranslate.animate().alpha(0).translationY(Utils.dpToPx(16)).setDuration(150).setListener(null).start();
+            viewToTranslate.animate().alpha(0).translationY(Utils.dpToPx(16)).setDuration(100).setInterpolator(new AccelerateInterpolator(2f)).setListener(null).start();
         }
     }
 
     public void onSeekBarProgressChanged() {
         if (active) {
-            SeekBar seekBar = seekBarWeakReference == null ? null : seekBarWeakReference.get();
+            SeekBarInterface seekBarInterface = seekBarWeakReference == null ? null : seekBarWeakReference.get();
             View viewToTranslate = viewToTranslateWeakReference == null ? null : viewToTranslateWeakReference.get();
-            if (seekBar != null && viewToTranslate != null) {
+            if (seekBarInterface != null && viewToTranslate != null) {
                 ViewParent viewParent = viewToTranslate.getParent();
                 if (viewParent != null && viewParent instanceof View) {
                     View parent = (View) viewParent;
-                    int progress = seekBar.getProgress();
-                    int max = seekBar.getMax();
+                    int progress = seekBarInterface.getProgress();
+                    int max = seekBarInterface.getMax();
                     float normalizedProgress = ((float) progress) / max;
-                    float seekBarX = seekBar.getX() + _16dp;
-                    float seekBarWidth = seekBar.getMeasuredWidth() - (2 * _16dp);
+                    float seekBarX = seekBarInterface.getX() + _16dp;
+                    float seekBarWidth = seekBarInterface.getMeasuredWidth() - (2 * _16dp);
                     float minTranslationX = padLeft;
                     float maxTranslationX = parent.getMeasuredWidth() - (viewToTranslate.getMeasuredHeight() + padRight);
                     float translationX = (seekBarX + (normalizedProgress * seekBarWidth)) - (viewToTranslate.getMeasuredWidth() / 2f);
@@ -124,7 +136,6 @@ public class VideoStoryboard {
             }
         }
     }
-
 
 
 }
