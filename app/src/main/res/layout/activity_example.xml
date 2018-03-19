@@ -84,7 +84,7 @@
         android:visibility="gone"
         tools:visibility="visible"
         tools:src="@drawable/sample_image"
-        android:layout_width="120dp"
+        android:layout_width="170dp"
         android:layout_height="0dp"
         android:layout_marginBottom="10dp"
         android:padding="2dp"

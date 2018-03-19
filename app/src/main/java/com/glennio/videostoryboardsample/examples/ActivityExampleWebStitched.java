@@ -66,7 +66,7 @@ public class ActivityExampleWebStitched extends AppCompatActivity {
     private StitchedWebImageApplier.Callback webImageApplierCallback = new StitchedWebImageApplier.Callback() {
         @Override
         public String getImageUriForPage(int page) {
-            return String.format("https://github.com/surahul/VideoStoryboard/blob/master/static_images/stitched/stitched_%s.png?raw=true", String.valueOf(1 + page));
+            return String.format("https://github.com/surahul/VideoStoryboard/blob/master/static_images/stitched/stitched_%s.jpg?raw=true", String.valueOf(1 + page));
         }
 
 

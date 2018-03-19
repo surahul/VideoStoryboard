@@ -24,7 +24,7 @@ public class StitchedWebImageApplier extends BaseWebImageApplier {
         private int progressPerImage;
 
 
-        public Configuration( int pageCount, int pageWidth, int pageHeight, int imagePerRow, int rowCount, int progressPerImage) {
+        public Configuration(int pageCount, int pageWidth, int pageHeight, int imagePerRow, int rowCount, int progressPerImage) {
             this.pageCount = pageCount;
             this.pageWidth = pageWidth;
             this.pageHeight = pageHeight;
@@ -93,6 +93,8 @@ public class StitchedWebImageApplier extends BaseWebImageApplier {
             int progressPerImage = configuration.getProgressPerImage();
             int globalImageIndex = (int) Math.ceil(progress / ((float) progressPerImage));
             int pageIndex = (int) Math.ceil(globalImageIndex / ((float) imagesPerPage));
+            if (pageIndex == 0)
+                pageIndex++;
             startWorker(progress, imageSize, callback == null ? null : callback.getImageUriForPage(Math.min(pageCount - 1, (pageIndex - 1))));
         }
     }
@@ -108,8 +110,21 @@ public class StitchedWebImageApplier extends BaseWebImageApplier {
             pageIndex -= 1;
             globalImageIndex -= 1;
             int localIndex = globalImageIndex - (pageIndex * imagesPerPage);
-            Bitmap croppedBitmap = Bitmap.createBitmap(bitmap, (int) (bitmap.getWidth() / ((float) (localIndex % configuration.getImagePerRow()))), (int) (bitmap.getHeight() / ((float) (localIndex % configuration.getRowCount()))), (int) (bitmap.getWidth() / (float) configuration.getImagePerRow()), (int) (bitmap.getHeight() / (float) configuration.getRowCount()));
-            imageView.setImageBitmap(croppedBitmap);
+            int x = (int) ((bitmap.getWidth() / (float) configuration.getImagePerRow()) * (localIndex % configuration.getImagePerRow()));
+            int y = (int) ((bitmap.getHeight() / (float) configuration.getRowCount()) * (localIndex / configuration.getRowCount()));
+            int width = (int) (bitmap.getWidth() / (float) configuration.getImagePerRow());
+            int height = (int) (bitmap.getHeight() / (float) configuration.getRowCount());
+            while (x + width > bitmap.getWidth())
+                width--;
+            while (y + height > bitmap.getHeight())
+                height--;
+
+            try {
+                Bitmap croppedBitmap = Bitmap.createBitmap(bitmap, x, y, width, height);
+                imageView.setImageBitmap(croppedBitmap);
+            } catch (Exception ignored) {
+            }
+
         }
 
     }
