@@ -24,6 +24,9 @@
         <activity
             android:name=".examples.ActivityExampleWebSimple"
             android:label="@string/simple_images_from_web" />
+        <activity
+            android:name=".examples.ActivityExampleWebStitched"
+            android:label="@string/stitched_images_from_web" />
     </application>
 
 </manifest>

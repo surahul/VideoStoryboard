@@ -9,7 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 
-import com.glennio.storyboard.SimpleWebImageApplier;
+import com.glennio.storyboard.image_applier.SimpleWebImageApplier;
 import com.glennio.storyboard.VideoStoryboard;
 import com.glennio.videostoryboardsample.R;
 

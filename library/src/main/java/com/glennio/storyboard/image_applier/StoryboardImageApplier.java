@@ -1,4 +1,4 @@
-package com.glennio.storyboard;
+package com.glennio.storyboard.image_applier;
 
 import android.widget.ImageView;
 

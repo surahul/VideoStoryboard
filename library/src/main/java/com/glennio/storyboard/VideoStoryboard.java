@@ -6,6 +6,8 @@ import android.view.ViewParent;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 
+import com.glennio.storyboard.image_applier.StoryboardImageApplier;
+
 import java.lang.ref.WeakReference;
 
 /**

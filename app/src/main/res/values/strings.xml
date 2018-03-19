@@ -2,4 +2,5 @@
     <string name="app_name">Video Storyboard Sample</string>
     <string name="simple_example">Simple Example</string>
     <string name="simple_images_from_web">Simple images from web</string>
+    <string name="stitched_images_from_web">Stitched images from web</string>
 </resources>
