@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.glennio.videostoryboardsample.examples.ActivityExampleSimple;
+import com.glennio.videostoryboardsample.examples.ActivityExampleWebSimple;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
         final List<Object> options = new ArrayList<>();
         options.add(new Option(getString(R.string.simple_example), ActivityExampleSimple.class));
+        options.add(new Option(getString(R.string.simple_images_from_web), ActivityExampleWebSimple.class));
 
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

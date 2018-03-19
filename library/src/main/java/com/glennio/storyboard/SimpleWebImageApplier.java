@@ -1,5 +1,6 @@
 package com.glennio.storyboard;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
@@ -9,6 +10,7 @@ import android.widget.ImageView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
 
 import java.lang.ref.WeakReference;
@@ -31,11 +33,37 @@ public class SimpleWebImageApplier implements StoryboardImageApplier {
     private Handler handler;
     private Bitmap.Config bitmapConfig = Bitmap.Config.RGB_565;
 
-    public SimpleWebImageApplier(Callback callback) {
+    public SimpleWebImageApplier(Callback callback, Context context) {
+        checkAndInitImageLoader(context);
         this.handler = new Handler(Looper.getMainLooper());
         this.callbackWeakReference = callback == null ? null : new WeakReference<>(callback);
     }
 
+    private static void checkAndInitImageLoader(Context context) {
+        if (!ImageLoader.getInstance().isInited()) {
+            ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)
+                    .diskCacheFileCount(100)
+                    .diskCacheSize(5 * 1024 * 1024)
+                    .memoryCacheSizePercentage(10)
+                    .build();
+            ImageLoader.getInstance().init(config);
+        }
+    }
+
+
+    private void applyPlaceHolder() {
+        handler.removeCallbacks(applyPlaceHolderRunnable);
+        handler.postDelayed(applyPlaceHolderRunnable, 100);
+    }
+
+    private Runnable applyPlaceHolderRunnable = new Runnable() {
+        @Override
+        public void run() {
+            ImageView imageView = imageViewWeakReference == null ? null : imageViewWeakReference.get();
+            if (imageView != null && placeholderDrawable != null && !placeholderDrawable.equals(imageView.getDrawable()))
+                imageView.setImageDrawable(placeholderDrawable);
+        }
+    };
 
     @Override
     public void applyImageForProgress(ImageView imageView, int progress) {
@@ -43,11 +71,11 @@ public class SimpleWebImageApplier implements StoryboardImageApplier {
         if (worker != null && worker.isRunning())
             pendingProgress = progress;
         else {
-            if (placeholderDrawable != null && imageView != null)
-                imageView.setImageDrawable(placeholderDrawable);
+            applyPlaceHolder();
             this.pendingProgress = -1;
             Callback callback = callbackWeakReference == null ? null : callbackWeakReference.get();
-            worker = new Worker(bitmapConfig, workerCallback, callback == null ? null : callback.getImageUriForProgress(progress), imageView);
+            ImageSize imageSize = imageView == null ? null : new ImageSize(imageView.getMeasuredWidth(), imageView.getMeasuredHeight());
+            worker = new Worker(bitmapConfig, workerCallback, callback == null ? null : callback.getImageUriForProgress(progress), imageSize);
             worker.start();
         }
     }
@@ -58,16 +86,17 @@ public class SimpleWebImageApplier implements StoryboardImageApplier {
 
     private Worker.Callback workerCallback = new Worker.Callback() {
         @Override
-        public void onFetch(final Drawable drawable) {
+        public void onFetch(final Bitmap bitmap) {
             final ImageView imageView = imageViewWeakReference == null ? null : imageViewWeakReference.get();
             if (imageView != null) {
                 if (Looper.getMainLooper() == Looper.myLooper())
-                    imageView.setImageDrawable(drawable);
+                    imageView.setImageBitmap(bitmap);
                 else
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            imageView.setImageDrawable(drawable);
+                            handler.removeCallbacks(applyPlaceHolderRunnable);
+                            imageView.setImageBitmap(bitmap);
                         }
                     });
             }
@@ -92,21 +121,21 @@ public class SimpleWebImageApplier implements StoryboardImageApplier {
     private static class Worker extends Thread {
 
         public interface Callback {
-            void onFetch(Drawable drawable);
+            void onFetch(Bitmap bitmap);
 
             void onComplete();
         }
 
         private boolean running;
         private WeakReference<Callback> callbackWeakReference;
-        private WeakReference<ImageView> imageViewWeakReference;
+        private ImageSize imageSize;
         private Bitmap.Config bitmapConfig;
         private String imageUri;
 
-        public Worker(Bitmap.Config bitmapConfig, Callback callback, String imageUri, ImageView imageView) {
+        public Worker(Bitmap.Config bitmapConfig, Callback callback, String imageUri, ImageSize imageSize) {
             this.bitmapConfig = bitmapConfig;
             this.callbackWeakReference = callback == null ? null : new WeakReference<>(callback);
-            this.imageViewWeakReference = imageView == null ? null : new WeakReference<>(imageView);
+            this.imageSize = imageSize;
             this.imageUri = imageUri;
         }
 
@@ -114,10 +143,12 @@ public class SimpleWebImageApplier implements StoryboardImageApplier {
         public void run() {
             running = true;
             try {
-                ImageView imageView = imageViewWeakReference == null ? null : imageViewWeakReference.get();
-                if (imageView != null && !TextUtils.isEmpty(imageUri)) {
+                if (imageSize != null && !TextUtils.isEmpty(imageUri)) {
                     DisplayImageOptions displayImageOptions = createDisplayImageOptions();
-                    ImageLoader.getInstance().loadImageSync(imageUri, new ImageSize(imageView.getMeasuredWidth(), imageView.getMeasuredHeight()), displayImageOptions);
+                    Bitmap bitmap = ImageLoader.getInstance().loadImageSync(imageUri, imageSize, displayImageOptions);
+                    if (bitmap != null)
+                        callFetch(bitmap);
+
                 }
             } finally {
                 running = false;
@@ -141,10 +172,10 @@ public class SimpleWebImageApplier implements StoryboardImageApplier {
                 callback.onComplete();
         }
 
-        private void callFetch(Drawable drawable) {
+        private void callFetch(Bitmap bitmap) {
             Callback callback = callbackWeakReference == null ? null : callbackWeakReference.get();
             if (callback != null)
-                callback.onFetch(drawable);
+                callback.onFetch(bitmap);
         }
 
         public boolean isRunning() {

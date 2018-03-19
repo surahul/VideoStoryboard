@@ -22,10 +22,12 @@ public class VideoStoryboard {
     private float _16dp;
     private StoryboardImageApplier imageApplier;
 
+
     public VideoStoryboard() {
         _16dp = Utils.dpToPx(16);
         padLeft = _16dp;
         padRight = padLeft;
+
     }
 
 
