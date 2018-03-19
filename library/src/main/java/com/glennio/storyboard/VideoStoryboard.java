@@ -20,7 +20,7 @@ public class VideoStoryboard {
     float padLeft, padRight;
     private boolean active;
     private float _16dp;
-    private StoryboardImageProvider imageProvider;
+    private StoryboardImageApplier imageApplier;
 
     public VideoStoryboard() {
         _16dp = Utils.dpToPx(16);
@@ -29,11 +29,11 @@ public class VideoStoryboard {
     }
 
 
-    public void setImageProvider(StoryboardImageProvider imageProvider) {
-        this.imageProvider = imageProvider;
+    public void setImageApplier(StoryboardImageApplier imageApplier) {
+        this.imageApplier = imageApplier;
     }
 
-    public void bindViews(@Nullable View viewToTranslate, @Nullable SeekBar seekBar,@Nullable ImageView imageView) {
+    public void bindViews(@Nullable View viewToTranslate, @Nullable SeekBar seekBar, @Nullable ImageView imageView) {
         if (viewToTranslate != null)
             this.viewToTranslateWeakReference = new WeakReference<>(viewToTranslate);
         else {
@@ -111,15 +111,16 @@ public class VideoStoryboard {
                     float translationX = (seekBarX + (normalizedProgress * seekBarWidth)) - (viewToTranslate.getMeasuredWidth() / 2f);
                     viewToTranslate.setTranslationX(Math.min(Math.max(translationX, minTranslationX), maxTranslationX));
 
-                    ImageView imageView = imageViewWeakReference==null?null:imageViewWeakReference.get();
-                    if(imageView!=null&&imageProvider!=null){
-                        imageView.setImageDrawable(imageProvider.getImageForProgress(progress));
+                    ImageView imageView = imageViewWeakReference == null ? null : imageViewWeakReference.get();
+                    if (imageView != null && imageApplier != null) {
+                        imageApplier.applyImageForProgress(imageView, progress);
                     }
                 }
 
             }
         }
     }
+
 
 
 }

@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 
-import com.glennio.storyboard.StoryboardImageProvider;
+import com.glennio.storyboard.StoryboardImageApplier;
 import com.glennio.storyboard.VideoStoryboard;
 import com.glennio.videostoryboardsample.R;
 
@@ -29,7 +29,7 @@ public class ActivityExampleSimple extends AppCompatActivity{
         SeekBar seekBar = findViewById(R.id.seek_bar);
         final VideoStoryboard videoStoryboard = new VideoStoryboard();
         videoStoryboard.bindViews(findViewById(R.id.view_to_translate),seekBar,(ImageView)findViewById(R.id.view_to_translate));
-        videoStoryboard.setImageProvider(new StoryboardImageProvider() {
+        videoStoryboard.setImageApplier(new StoryboardImageApplier() {
             @Override
             public Drawable getImageForProgress(int progress) {
                 return staticDrawable;
