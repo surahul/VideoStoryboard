@@ -84,7 +84,7 @@ public class VideoStoryboard {
     public void onStartTouch() {
         this.active = true;
         animateImageViewAppearance();
-        onSeekBarProgressChanged();
+        onSeekBarProgressChanged(false);
     }
 
     public void onStopTouch() {
@@ -109,7 +109,11 @@ public class VideoStoryboard {
         }
     }
 
-    public void onSeekBarProgressChanged() {
+    public void onSeekBarProgressChanged(boolean force) {
+        if(!active&&force) {
+            active = true;
+            animateImageViewAppearance();
+        }
         if (active) {
             SeekBarInterface seekBarInterface = seekBarWeakReference == null ? null : seekBarWeakReference.get();
             View viewToTranslate = viewToTranslateWeakReference == null ? null : viewToTranslateWeakReference.get();

@@ -42,7 +42,7 @@ public class ActivityExampleWebSimple extends AppCompatActivity {
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                videoStoryboard.onSeekBarProgressChanged();
+                videoStoryboard.onSeekBarProgressChanged(fromUser);
             }
 
             @Override

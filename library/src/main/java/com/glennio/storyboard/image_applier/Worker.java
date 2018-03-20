@@ -12,7 +12,7 @@ import java.lang.ref.WeakReference;
 public class Worker extends Thread {
 
         public interface Callback {
-            void onFetch(Bitmap bitmap,int progress);
+            void onFetch(Bitmap bitmap, int progress);
 
             void onComplete();
         }
@@ -24,7 +24,7 @@ public class Worker extends Thread {
         private String imageUri;
         private int progress;
 
-        public Worker(Bitmap.Config bitmapConfig,int progress, Callback callback, String imageUri, ImageSize imageSize) {
+        public Worker(Bitmap.Config bitmapConfig, int progress, Callback callback, String imageUri, ImageSize imageSize) {
             this.bitmapConfig = bitmapConfig;
             this.callbackWeakReference = callback == null ? null : new WeakReference<>(callback);
             this.progress = progress;

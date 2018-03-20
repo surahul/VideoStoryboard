@@ -95,7 +95,8 @@ public class StitchedWebImageApplier extends BaseWebImageApplier {
             int pageIndex = (int) Math.ceil(globalImageIndex / ((float) imagesPerPage));
             if (pageIndex == 0)
                 pageIndex++;
-            startWorker(progress, imageSize, callback == null ? null : callback.getImageUriForPage(Math.min(pageCount - 1, (pageIndex - 1))));
+            pageIndex = Math.max(0, Math.min(pageCount - 1, (pageIndex - 1)));
+            startWorker(progress, imageSize, callback == null ? null : callback.getImageUriForPage(pageIndex));
         }
     }
 
