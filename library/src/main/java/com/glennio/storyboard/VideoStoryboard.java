@@ -35,13 +35,14 @@ public class VideoStoryboard {
     private boolean active;
     private float _16dp;
     private StoryboardImageApplier imageApplier;
+    private boolean rtl;
 
 
-    public VideoStoryboard() {
+    public VideoStoryboard(boolean rtl) {
         _16dp = Utils.dpToPx(16);
         padLeft = _16dp;
         padRight = padLeft;
-
+        this.rtl = rtl;
     }
 
 
@@ -110,7 +111,7 @@ public class VideoStoryboard {
     }
 
     public void onSeekBarProgressChanged(boolean force) {
-        if(!active&&force) {
+        if (!active && force) {
             active = true;
             animateImageViewAppearance();
         }
@@ -126,11 +127,10 @@ public class VideoStoryboard {
                     float normalizedProgress = ((float) progress) / max;
                     float seekBarX = seekBarInterface.getX() + _16dp;
                     float seekBarWidth = seekBarInterface.getMeasuredWidth() - (2 * _16dp);
-                    float minTranslationX = padLeft;
-                    float maxTranslationX = parent.getMeasuredWidth() - (viewToTranslate.getMeasuredHeight() + padRight);
-                    float translationX = (seekBarX + (normalizedProgress * seekBarWidth)) - (viewToTranslate.getMeasuredWidth() / 2f);
-                    viewToTranslate.setTranslationX(Math.min(Math.max(translationX, minTranslationX), maxTranslationX));
-
+                    float minTranslationX = rtl ? padRight : padLeft;
+                    float maxTranslationX = parent.getMeasuredWidth() - (viewToTranslate.getMeasuredWidth() + (rtl ? padLeft : padRight));
+                    float translationX = ((seekBarX + (normalizedProgress * seekBarWidth)) - (viewToTranslate.getMeasuredWidth() / 2f))-(rtl?3*_16dp:0);
+                    viewToTranslate.setTranslationX((rtl ? -1 : 1) * Math.min(Math.max(translationX, minTranslationX), maxTranslationX));
                     ImageView imageView = imageViewWeakReference == null ? null : imageViewWeakReference.get();
                     if (imageView != null && imageApplier != null) {
                         imageApplier.applyImageForProgress(imageView, progress);
