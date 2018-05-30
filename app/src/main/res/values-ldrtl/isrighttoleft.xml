@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <bool name="is_right_to_left">true</bool>
+    <integer name="locale_mirror_flip">180</integer>
+</resources>

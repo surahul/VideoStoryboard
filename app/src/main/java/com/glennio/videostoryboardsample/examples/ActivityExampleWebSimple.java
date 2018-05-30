@@ -33,7 +33,7 @@ public class ActivityExampleWebSimple extends AppCompatActivity {
         seekBar.setMax(7 * 4);
         seekBar.setProgress(0);
 
-        final VideoStoryboard videoStoryboard = new VideoStoryboard();
+        final VideoStoryboard videoStoryboard = new VideoStoryboard(getResources().getBoolean(R.bool.is_right_to_left));
         simpleWebImageApplier = new SimpleWebImageApplier(webImageApplierCallback, getApplicationContext());
         simpleWebImageApplier.setPlaceholderDrawable(new ColorDrawable(Color.GRAY));
 

@@ -33,7 +33,7 @@ public class ActivityExampleWebStitched extends AppCompatActivity {
         seekBar.setMax(500);
         seekBar.setProgress(0);
 
-        final VideoStoryboard videoStoryboard = new VideoStoryboard();
+        final VideoStoryboard videoStoryboard = new VideoStoryboard(getResources().getBoolean(R.bool.is_right_to_left));
         stitchedWebImageApplier = new StitchedWebImageApplier(getApplicationContext(), webImageApplierCallback, new StitchedWebImageApplier.Configuration(
                 4,
                 800,

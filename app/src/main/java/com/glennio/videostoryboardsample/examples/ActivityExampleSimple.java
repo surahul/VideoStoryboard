@@ -28,7 +28,7 @@ public class ActivityExampleSimple extends AppCompatActivity {
         staticDrawable = getResources().getDrawable(R.drawable.sample_image);
 
         seekBar = findViewById(R.id.seek_bar);
-        final VideoStoryboard videoStoryboard = new VideoStoryboard();
+        final VideoStoryboard videoStoryboard = new VideoStoryboard(getResources().getBoolean(R.bool.is_right_to_left));
         videoStoryboard.bindViews(findViewById(R.id.view_to_translate), seekBarInterface, (ImageView) findViewById(R.id.view_to_translate));
         videoStoryboard.setImageApplier(new StoryboardImageApplier() {
             @Override
