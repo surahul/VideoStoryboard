@@ -15,53 +15,6 @@ import java.lang.ref.WeakReference;
 public class StitchedWebImageApplier extends BaseWebImageApplier {
 
 
-    public static class Configuration {
-        private int pageCount;
-        private int pageWidth;
-        private int pageHeight;
-        private int imagePerRow;
-        private int rowCount;
-        private int progressPerImage;
-
-
-        public Configuration(int pageCount, int pageWidth, int pageHeight, int imagePerRow, int rowCount, int progressPerImage) {
-            this.pageCount = pageCount;
-            this.pageWidth = pageWidth;
-            this.pageHeight = pageHeight;
-            this.imagePerRow = imagePerRow;
-            this.rowCount = rowCount;
-            this.progressPerImage = progressPerImage;
-        }
-
-        public int getPageCount() {
-            return pageCount;
-        }
-
-        public int getPageWidth() {
-            return pageWidth;
-        }
-
-        public int getPageHeight() {
-            return pageHeight;
-        }
-
-        public int getImagePerRow() {
-            return imagePerRow;
-        }
-
-        public int getRowCount() {
-            return rowCount;
-        }
-
-        public int getProgressPerImage() {
-            return progressPerImage;
-        }
-    }
-
-    public interface Callback {
-        String getImageUriForPage(int page);
-    }
-
     private WeakReference<Callback> callbackWeakReference;
     private Configuration configuration;
 
@@ -70,7 +23,6 @@ public class StitchedWebImageApplier extends BaseWebImageApplier {
         this.callbackWeakReference = callback == null ? null : new WeakReference<>(callback);
         this.configuration = configuration;
     }
-
 
     @Override
     public void applyImageForProgress(ImageView imageView, int progress) {
@@ -128,5 +80,53 @@ public class StitchedWebImageApplier extends BaseWebImageApplier {
 
         }
 
+    }
+
+
+    public interface Callback {
+        String getImageUriForPage(int page);
+    }
+
+    public static class Configuration {
+        private int pageCount;
+        private int pageWidth;
+        private int pageHeight;
+        private int imagePerRow;
+        private int rowCount;
+        private int progressPerImage;
+
+
+        public Configuration(int pageCount, int pageWidth, int pageHeight, int imagePerRow, int rowCount, int progressPerImage) {
+            this.pageCount = pageCount;
+            this.pageWidth = pageWidth;
+            this.pageHeight = pageHeight;
+            this.imagePerRow = imagePerRow;
+            this.rowCount = rowCount;
+            this.progressPerImage = progressPerImage;
+        }
+
+        public int getPageCount() {
+            return pageCount;
+        }
+
+        public int getPageWidth() {
+            return pageWidth;
+        }
+
+        public int getPageHeight() {
+            return pageHeight;
+        }
+
+        public int getImagePerRow() {
+            return imagePerRow;
+        }
+
+        public int getRowCount() {
+            return rowCount;
+        }
+
+        public int getProgressPerImage() {
+            return progressPerImage;
+        }
     }
 }

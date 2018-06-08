@@ -17,34 +17,20 @@ import java.lang.ref.WeakReference;
 
 public class VideoStoryboard {
 
-    public interface SeekBarInterface {
-
-        int getProgress();
-
-        int getMax();
-
-        float getX();
-
-        float getMeasuredWidth();
-    }
-
+    float padLeft, padRight;
     private WeakReference<View> viewToTranslateWeakReference;
     private WeakReference<SeekBarInterface> seekBarWeakReference;
     private WeakReference<ImageView> imageViewWeakReference;
-    float padLeft, padRight;
     private boolean active;
     private float _16dp;
     private StoryboardImageApplier imageApplier;
     private boolean rtl;
-
-
     public VideoStoryboard(boolean rtl) {
         _16dp = Utils.dpToPx(16);
         padLeft = _16dp;
         padRight = padLeft;
         this.rtl = rtl;
     }
-
 
     public void setImageApplier(StoryboardImageApplier imageApplier) {
         this.imageApplier = imageApplier;
@@ -129,7 +115,7 @@ public class VideoStoryboard {
                     float seekBarWidth = seekBarInterface.getMeasuredWidth() - (2 * _16dp);
                     float minTranslationX = rtl ? padRight : padLeft;
                     float maxTranslationX = parent.getMeasuredWidth() - (viewToTranslate.getMeasuredWidth() + (rtl ? padLeft : padRight));
-                    float translationX = ((seekBarX + (normalizedProgress * seekBarWidth)) - (viewToTranslate.getMeasuredWidth() / 2f))-(rtl?3*_16dp:0);
+                    float translationX = ((seekBarX + (normalizedProgress * seekBarWidth)) - (viewToTranslate.getMeasuredWidth() / 2f)) - (rtl ? 3 * _16dp : 0);
                     viewToTranslate.setTranslationX((rtl ? -1 : 1) * Math.min(Math.max(translationX, minTranslationX), maxTranslationX));
                     ImageView imageView = imageViewWeakReference == null ? null : imageViewWeakReference.get();
                     if (imageView != null && imageApplier != null) {
@@ -139,6 +125,17 @@ public class VideoStoryboard {
 
             }
         }
+    }
+
+    public interface SeekBarInterface {
+
+        int getProgress();
+
+        int getMax();
+
+        float getX();
+
+        float getMeasuredWidth();
     }
 
 

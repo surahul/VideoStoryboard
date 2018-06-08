@@ -15,17 +15,12 @@ import java.lang.ref.WeakReference;
 public class SimpleWebImageApplier extends BaseWebImageApplier {
 
 
-    public interface Callback {
-        String getImageUriForProgress(int progress);
-    }
-
     private WeakReference<Callback> callbackWeakReference;
 
     public SimpleWebImageApplier(Callback callback, Context context) {
         super(context);
         this.callbackWeakReference = callback == null ? null : new WeakReference<>(callback);
     }
-
 
     @Override
     public void applyImageForProgress(ImageView imageView, int progress) {
@@ -46,6 +41,10 @@ public class SimpleWebImageApplier extends BaseWebImageApplier {
         ImageView imageView = imageViewWeakReference == null ? null : imageViewWeakReference.get();
         if (imageView != null)
             imageView.setImageBitmap(bitmap);
+    }
+
+    public interface Callback {
+        String getImageUriForProgress(int progress);
     }
 
 
