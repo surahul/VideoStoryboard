@@ -28,5 +28,6 @@ task clean(type: Delete) {
 
 ext {
     supportAnnotationsVersion = "27.1.1"
+    universalImageLoaderVersion = "1.9.5"
 }
 
